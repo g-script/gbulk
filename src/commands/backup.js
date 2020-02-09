@@ -15,31 +15,29 @@ class BackupCommand extends Command {
 
 With {bold gbulk}, you can backup from different sources:
 - to backup repositories you own, run {yellow gbulk backup} without arguments (if you want to specify a backup path, use {yellow gbulk backup $YOUR_USERNAME $BACKUP_PATH})
-- to backup repositories of a user, run {yellow gbulk backup $USERNAME} (it will only backup user public repositories)
-- to backup repositories of an organization, run {yellow gbulk backup $ORGNAME} (if you have pull rights, all repositories will be backup, if not, only public repositories will)
+- to backup repositories of another user, run {yellow gbulk backup $USERNAME}
+- to backup repositories of an organization, run {yellow gbulk backup $ORGNAME}
 
-Git LFS objects will be backup if {bold git-lfs} is available in path.
-
-Scopes needed are : {bold public_repo} or {bold repo}.`
+Git LFS objects will be backup if {bold git-lfs} is available in path.`
 
   static flags = {
     help: flags.help({ char: 'h' }),
     public: flags.boolean({
-      description: 'backup public repositories'
+      description: 'include/exclude public repositories'
     }),
     private: flags.boolean({
-      description: 'backup private repositories'
+      description: 'include/exclude private repositories'
     }),
     owner: flags.boolean({
-      description: 'backup owned repositories',
+      description: 'include/exclude owned repositories',
       allowNo: true
     }),
     collaborator: flags.boolean({
-      description: 'backup repositories of which user is collaborator',
+      description: 'include/exclude repositories where user is collaborator',
       allowNo: true
     }),
     member: flags.boolean({
-      description: 'backup repositories of which user is member',
+      description: 'include/exclude repositories where user is member',
       allowNo: true
     }),
     exclude: flags.string({
