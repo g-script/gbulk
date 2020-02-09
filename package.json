@@ -8,22 +8,28 @@
   },
   "bugs": "https://github.com/g-script/gbulk/issues",
   "dependencies": {
-    "@oclif/command": "^1.5.19",
-    "@oclif/config": "^1.13.3",
-    "@oclif/plugin-help": "^2.2.3",
-    "@oclif/plugin-warn-if-update-available": "^1.7.0",
-    "node": "^12.14.1"
+    "@oclif/command": "1.5.19",
+    "@oclif/config": "1.13.3",
+    "@oclif/plugin-help": "2.2.3",
+    "@oclif/plugin-not-found": "1.2.3",
+    "@oclif/plugin-warn-if-update-available": "1.7.0",
+    "axios": "0.19.2",
+    "conf": "6.2.0",
+    "debug": "4.1.1",
+    "execa": "4.0.0",
+    "inquirer": "7.0.4",
+    "node": "12.14.1"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/test": "^1.2.5",
-    "chai": "^4.2.0",
-    "eslint": "^5.16.0",
-    "eslint-config-oclif": "^3.1.0",
-    "globby": "^10.0.2",
-    "mocha": "^5.2.0",
-    "nyc": "^14.1.1",
-    "prettier": "^1.19.1"
+    "@oclif/dev-cli": "1.22.2",
+    "@oclif/test": "1.2.5",
+    "chai": "4.2.0",
+    "eslint": "5.16.0",
+    "eslint-config-oclif": "3.1.0",
+    "globby": "10.0.2",
+    "mocha": "5.2.0",
+    "nyc": "14.1.1",
+    "prettier": "1.19.1"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -45,10 +51,11 @@
     "bin": "gbulk",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-warn-if-update-available"
+      "@oclif/plugin-warn-if-update-available",
+      "@oclif/plugin-not-found"
     ],
     "warn-if-update-available": {
-      "timeoutInDays": 7
+      "timeoutInDays": 1
     }
   },
   "repository": "g-script/gbulk",
