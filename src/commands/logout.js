@@ -1,8 +1,7 @@
 const { Command, flags } = require('@oclif/command')
 const chalk = require('chalk')
-const Conf = require('conf')
 
-const config = new Conf()
+const config = require('../config')
 
 class LogoutCommand extends Command {
   static description = `logout from Github
