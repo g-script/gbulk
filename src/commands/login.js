@@ -1,11 +1,9 @@
 const { Command, flags } = require('@oclif/command')
 const chalk = require('chalk')
-const Conf = require('conf')
 const inquirer = require('inquirer')
 
+const config = require('../config')
 const GithubAPI = require('../lib/github-api')
-
-const config = new Conf()
 
 class LoginCommand extends Command {
   static description = chalk`login to Github

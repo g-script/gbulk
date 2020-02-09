@@ -1,14 +1,13 @@
 const { Command, flags } = require('@oclif/command')
 const chalk = require('chalk')
-const Conf = require('conf')
 const fs = require('fs')
 const inquirer = require('inquirer')
 const path = require('path')
 
+const config = require('../config')
 const GithubAPI = require('../lib/github-api')
 const Git = require('../lib/git')
 
-const config = new Conf()
 const backupPath = path.join(process.cwd(), `gbulk-backup-${Date.now()}`)
 
 class BackupCommand extends Command {
