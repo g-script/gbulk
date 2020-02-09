@@ -28,16 +28,6 @@
 
 # 🏗 Usage
 
-First, install `gbulk` globally with `npm`:
-
-```sh-session
-$ npm install -g @g-script/gbulk
-```
-
-After installation, the only thing you need to do is [generate a new personal access token](https://github.com/settings/tokens/new) with following permissions :
-* repo / **public_repo** - minimum requirement to backup a user/organization public repositories
-* **repo** - required to backup private repositories
-
 <!-- usage -->
 ```sh-session
 $ npm install -g @g-script/gbulk
@@ -51,6 +41,12 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+
+After installation, the only thing you need to do is [generate a new personal access token](https://github.com/settings/tokens/new) with following permissions :
+* repo / **public_repo** - minimum requirement to backup a user/organization public repositories
+* **repo** - required to backup private repositories
+
+Then run `gbulk login`
 
 # 🔨 Commands
 
