@@ -25,7 +25,7 @@ Each command needs access to different scopes, see individual command help secti
 
     const auth = config.get('auth')
 
-    if (auth.user) {
+    if (auth && auth.user) {
       const { confirm } = await inquirer.prompt([
         {
           type: 'list',
@@ -67,7 +67,10 @@ Each command needs access to different scopes, see individual command help secti
     } catch (err) {
       config.set('auth', {})
 
-      this.warn(`${auth.user} was logged out`)
+      if (auth && auth.user) {
+        this.warn(`${auth.user} was logged out`)
+      }
+
       this.error(err)
     }
   }

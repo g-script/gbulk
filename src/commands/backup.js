@@ -101,7 +101,7 @@ Scopes needed are : {bold public_repo} or {bold repo}.`
 
     const auth = config.get('auth')
 
-    if (!auth.token) {
+    if (!auth || !auth.token) {
       this.error(chalk`You are not authenticated, please run {yellow gbulk login} first.`)
     } else {
       this.debug('authenticated user is', auth.user)
