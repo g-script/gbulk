@@ -78,7 +78,8 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
   static args = [
     {
       name: 'from',
-      description: chalk`{underline user} name or {underline organization} name to backup from`
+      description: chalk`{underline user} name or {underline organization} name to backup from`,
+      default: config.get('auth.user')
     },
     {
       name: 'destination',
@@ -187,9 +188,8 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
 
     let repositories = []
 
-    // If `from` is not set, use authenticated user as backup source
     // If `from` equals authenticated user, use it as backup source (not as another user)
-    if (!args.from || args.from === auth.user) {
+    if (args.from === auth.user) {
       !flags.quiet && this.log(`Fetching repositories of ${auth.user}...`)
 
       this.debug('backup authenticated user repositories')
