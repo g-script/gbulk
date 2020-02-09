@@ -1,11 +1,9 @@
 const { Command, flags } = require('@oclif/command')
 const chalk = require('chalk')
-const Conf = require('conf')
 const inquirer = require('inquirer')
 
+const config = require('../config')
 const GithubAPI = require('../lib/github-api')
-
-const config = new Conf()
 
 class LoginCommand extends Command {
   static description = chalk`login to Github
@@ -27,7 +25,7 @@ Each command needs access to different scopes, see individual command help secti
 
     const auth = config.get('auth')
 
-    if (auth.user) {
+    if (auth && auth.user) {
       const { confirm } = await inquirer.prompt([
         {
           type: 'list',
@@ -69,7 +67,10 @@ Each command needs access to different scopes, see individual command help secti
     } catch (err) {
       config.set('auth', {})
 
-      this.warn(`${auth.user} was logged out`)
+      if (auth && auth.user) {
+        this.warn(`${auth.user} was logged out`)
+      }
+
       this.error(err)
     }
   }

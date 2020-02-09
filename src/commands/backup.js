@@ -1,14 +1,13 @@
 const { Command, flags } = require('@oclif/command')
 const chalk = require('chalk')
-const Conf = require('conf')
 const fs = require('fs')
 const inquirer = require('inquirer')
 const path = require('path')
 
+const config = require('../config')
 const GithubAPI = require('../lib/github-api')
 const Git = require('../lib/git')
 
-const config = new Conf()
 const backupPath = path.join(process.cwd(), `gbulk-backup-${Date.now()}`)
 
 class BackupCommand extends Command {
@@ -102,7 +101,7 @@ Scopes needed are : {bold public_repo} or {bold repo}.`
 
     const auth = config.get('auth')
 
-    if (!auth.token) {
+    if (!auth || !auth.token) {
       this.error(chalk`You are not authenticated, please run {yellow gbulk login} first.`)
     } else {
       this.debug('authenticated user is', auth.user)
