@@ -44,7 +44,7 @@ $ npm install -g @g-script/gbulk
 $ gbulk COMMAND
 running command...
 $ gbulk (-v|--version|version)
-@g-script/gbulk/1.0.1 linux-x64 node-v12.14.1
+@g-script/gbulk/1.0.2 linux-x64 node-v12.14.1
 $ gbulk --help [COMMAND]
 USAGE
   $ gbulk COMMAND
@@ -107,7 +107,7 @@ DESCRIPTION
   Git LFS objects will be backup if git-lfs is available in path.
 ```
 
-_See code: [src/commands/backup.js](https://github.com/g-script/gbulk/blob/v1.0.1/src/commands/backup.js)_
+_See code: [src/commands/backup.js](https://github.com/g-script/gbulk/blob/v1.0.2/src/commands/backup.js)_
 
 ## `gbulk help [COMMAND]`
 
@@ -143,7 +143,7 @@ DESCRIPTION
   Each command needs access to different scopes, see individual command help section to know which scopes are needed.
 ```
 
-_See code: [src/commands/login.js](https://github.com/g-script/gbulk/blob/v1.0.1/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/g-script/gbulk/blob/v1.0.2/src/commands/login.js)_
 
 ## `gbulk logout`
 
@@ -160,5 +160,5 @@ DESCRIPTION
   Erase authentication details from configuration file
 ```
 
-_See code: [src/commands/logout.js](https://github.com/g-script/gbulk/blob/v1.0.1/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/g-script/gbulk/blob/v1.0.2/src/commands/logout.js)_
 <!-- commandsstop -->
