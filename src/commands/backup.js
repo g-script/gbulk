@@ -1,4 +1,5 @@
 const { Command, flags } = require('@oclif/command')
+const Promise = require('aigle')
 const chalk = require('chalk')
 const fs = require('fs')
 const inquirer = require('inquirer')
@@ -9,6 +10,7 @@ const GithubAPI = require('../lib/github-api')
 const Git = require('../lib/git')
 
 const backupPath = path.join(process.cwd(), `gbulk-backup-${Date.now()}`)
+const defaultParallelCount = 8
 
 class BackupCommand extends Command {
   static description = chalk`backup repositories
@@ -72,6 +74,11 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
       description: 'interactive mode',
       default: false,
       exclusive: ['public', 'private', 'owner', 'collaborator', 'member', 'exclude', 'match', 'clean-refs', 'lfs']
+    }),
+    parallel: flags.string({
+      char: 'p',
+      description: 'backup multiple repositories in parallel',
+      default: defaultParallelCount
     })
   }
 
@@ -94,6 +101,14 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
 
     if (flags.quiet) {
       this.debug('quiet mode enabled')
+    }
+
+    flags.parallel = +flags.parallel
+
+    if (flags.parallel === NaN) {
+      this.debug(`parallel flag value [${flags.parallel}] is invalid, using default value (${defaultParallelCount})`)
+
+      flags.parallel = defaultParallelCount
     }
 
     this.debug('checking auth')
@@ -374,7 +389,7 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
 
       !flags.quiet && this.log(`Starting backup of ${repositories.length} repositories...`)
 
-      for (const repository of repositories) {
+      await Promise.all(repositories).mapLimit(flags.parallel, async (repository) => {
         const data = {
           path: path.resolve(args.destination, repository.fullName + '.git'),
           url: repository.urls.https
