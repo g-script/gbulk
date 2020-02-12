@@ -34,7 +34,7 @@ $ npm install -g @g-script/gbulk
 $ gbulk COMMAND
 running command...
 $ gbulk (-v|--version|version)
-@g-script/gbulk/1.0.2 linux-x64 node-v12.14.1
+@g-script/gbulk/1.1.0 linux-x64 node-v12.14.1
 $ gbulk --help [COMMAND]
 USAGE
   $ gbulk COMMAND
@@ -69,29 +69,31 @@ ARGUMENTS
   DESTINATION  backup destination path
 
 OPTIONS
-  -c, --clean-refs       clean GitHub specific pull refs (refs/pull) from backup repositories
-  -h, --help             show CLI help
-  -i, --interactive      interactive mode
+  -c, --clean-refs         clean GitHub specific pull refs (refs/pull) from backup repositories
+  -h, --help               show CLI help
+  -i, --interactive        interactive mode
 
-  -m, --match=match      include only repositories whose name is matching specified string or regex pattern (omitting
-                         start and end delimiters)
+  -m, --match=match        include only repositories whose name is matching specified string or regex pattern (omitting
+                           start and end delimiters)
 
-  -q, --quiet            disable logging
+  -p, --parallel=parallel  [default: 8] backup multiple repositories in parallel
 
-  -x, --exclude=exclude  exclude repositories whose name is matching specified string or regex pattern (omitting start
-                         and end delimiters)
+  -q, --quiet              disable logging
 
-  --[no-]collaborator    include/exclude repositories where user is collaborator
+  -x, --exclude=exclude    exclude repositories whose name is matching specified string or regex pattern (omitting start
+                           and end delimiters)
 
-  --[no-]lfs             include LFS objects in backup
+  --[no-]collaborator      include/exclude repositories where user is collaborator
 
-  --[no-]member          include/exclude repositories where user is member
+  --[no-]lfs               include LFS objects in backup
 
-  --[no-]owner           include/exclude owned repositories
+  --[no-]member            include/exclude repositories where user is member
 
-  --private              include/exclude private repositories
+  --[no-]owner             include/exclude owned repositories
 
-  --public               include/exclude public repositories
+  --private                include/exclude private repositories
+
+  --public                 include/exclude public repositories
 
 DESCRIPTION
   With gbulk, you can backup from different sources:
@@ -103,7 +105,7 @@ DESCRIPTION
   Git LFS objects will be backup if git-lfs is available in path.
 ```
 
-_See code: [src/commands/backup.js](https://github.com/g-script/gbulk/blob/v1.0.2/src/commands/backup.js)_
+_See code: [src/commands/backup.js](https://github.com/g-script/gbulk/blob/v1.1.0/src/commands/backup.js)_
 
 ## `gbulk help [COMMAND]`
 
@@ -139,7 +141,7 @@ DESCRIPTION
   Each command needs access to different scopes, see individual command help section to know which scopes are needed.
 ```
 
-_See code: [src/commands/login.js](https://github.com/g-script/gbulk/blob/v1.0.2/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/g-script/gbulk/blob/v1.1.0/src/commands/login.js)_
 
 ## `gbulk logout`
 
@@ -156,5 +158,5 @@ DESCRIPTION
   Erase authentication details from configuration file
 ```
 
-_See code: [src/commands/logout.js](https://github.com/g-script/gbulk/blob/v1.0.2/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/g-script/gbulk/blob/v1.1.0/src/commands/logout.js)_
 <!-- commandsstop -->
