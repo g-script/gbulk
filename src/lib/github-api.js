@@ -133,9 +133,6 @@ const recurseRepositories = async function({ token, url, params, repositories = 
     debug(`got ${res.data.length} repos`)
 
     repos = res.data.reduce((acc, repo) => {
-      if (/yellowinnovation.fr/.test(repo.full_name)) {
-        console.log(repo)
-      }
       if (repo.permissions && !repo.permissions.pull) {
         debug(`user do not have pull right on repository ${repo.name}, skipping it`)
       } else {

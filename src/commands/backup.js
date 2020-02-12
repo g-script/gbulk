@@ -1,14 +1,18 @@
 const { Command, flags } = require('@oclif/command')
+const Promise = require('aigle')
 const chalk = require('chalk')
 const fs = require('fs')
 const inquirer = require('inquirer')
 const path = require('path')
+const Spinnies = require('spinnies')
 
 const config = require('../config')
 const GithubAPI = require('../lib/github-api')
 const Git = require('../lib/git')
 
+const spinnies = new Spinnies()
 const backupPath = path.join(process.cwd(), `gbulk-backup-${Date.now()}`)
+const defaultParallelCount = 8
 
 class BackupCommand extends Command {
   static description = chalk`backup repositories
@@ -71,7 +75,23 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
       char: 'i',
       description: 'interactive mode',
       default: false,
-      exclusive: ['public', 'private', 'owner', 'collaborator', 'member', 'exclude', 'match', 'clean-refs', 'lfs']
+      exclusive: [
+        'public',
+        'private',
+        'owner',
+        'collaborator',
+        'member',
+        'exclude',
+        'match',
+        'clean-refs',
+        'lfs',
+        'quiet'
+      ]
+    }),
+    parallel: flags.string({
+      char: 'p',
+      description: 'backup multiple repositories in parallel',
+      default: defaultParallelCount
     })
   }
 
@@ -94,6 +114,14 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
 
     if (flags.quiet) {
       this.debug('quiet mode enabled')
+    }
+
+    flags.parallel = +flags.parallel
+
+    if (flags.parallel === NaN) {
+      this.debug(`parallel flag value [${flags.parallel}] is invalid, using default value (${defaultParallelCount})`)
+
+      flags.parallel = defaultParallelCount
     }
 
     this.debug('checking auth')
@@ -190,7 +218,9 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
 
     // If `from` equals authenticated user, use it as backup source (not as another user)
     if (args.from === auth.user) {
-      !flags.quiet && this.log(`Fetching repositories of ${auth.user}...`)
+      if (!flags.quiet) {
+        spinnies.add('fetch', { text: `Fetching repositories of ${auth.user}` })
+      }
 
       this.debug('backup authenticated user repositories')
 
@@ -226,12 +256,18 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
     // - user
     // - organization
 
+    if (!flags.quiet) {
+      spinnies.succeed('fetch')
+    }
+
     if (!repositories.length) {
       this.warn('No repositories to backup.')
 
       exitCode = 1
     } else {
-      this.debug(`${repositories.length} repositories to backup`)
+      if (!flags.quiet) {
+        spinnies.add('prepare', { text: `Preparing backup of ${repositories.length} repositories...` })
+      }
 
       if (flags.exclude) {
         this.debug('filter repos following exclude flag')
@@ -372,20 +408,27 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
         }
       }
 
-      !flags.quiet && this.log(`Starting backup of ${repositories.length} repositories...`)
 
-      for (const repository of repositories) {
+      await Promise.all(repositories).mapLimit(flags.parallel, async (repository) => {
         const data = {
           path: path.resolve(args.destination, repository.fullName + '.git'),
           url: repository.urls.https
         }
 
+        if (!flags.quiet) {
+          spinnies.add(repository.fullName, { text: `${repository.fullName} ==> Cloning...` })
+        }
+
         try {
-          await Git.clone(data, flags.quiet)
+          await Git.clone(data)
 
           if (flags.lfs && gitLFS) {
+            if (!flags.quiet) {
+              spinnies.update(repository.fullName, { text: `${repository.fullName} ==> Fetching LFS objects...` })
+            }
+
             try {
-              await Git.LFS.fetch(data, flags.quiet)
+              await Git.LFS.fetch(data)
             } catch (err) {
               this.warn(`Failed to fetch LFS objects from ${repository.fullName}`)
               this.debug(err)
@@ -395,7 +438,9 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
           }
 
           if (flags['clean-refs']) {
-            this.debug('clean /pull refs')
+            if (!flags.quiet) {
+              spinnies.update(repository.fullName, { text: `${repository.fullName} ==> Cleaning /pull refs...` })
+            }
 
             try {
               await Git.cleanRefs(data)
@@ -406,14 +451,42 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
               exitCode = 1
             }
           }
+
+          if (!flags.quiet) {
+            spinnies.succeed(repository.fullName, { text: `${repository.fullName} ===> ${data.path}` })
+            spinnies.update('backup', { text: globalBackupText(++backupCount) })
+
+            if (repositories.length > 25) {
+              setTimeout(() => {
+                spinnies.remove(repository.fullName)
+              }, 5000)
+            }
+          }
         } catch (err) {
           if (err.exitCode === 128) {
-            this.error(`Failed to backup ${repository.fullName}, destination path exists and is not empty`)
+            const error = `${repository.fullName}: destination path exists and is not empty`
+
+            if (!flags.quiet) {
+              spinnies.fail(repository.fullName, {
+                text: error
+              })
+            } else {
+              this.warn(error)
+            }
+          } else {
+            if (!flags.quiet) {
+              spinnies.fail(repository.fullName, { text: err.shortMessage })
+            } else {
+              this.warn(err.shortMessage)
+            }
           }
 
-          this.error(err.shortMessage)
           this.debug(err)
         }
+      })
+
+      if (!flags.quiet) {
+        spinnies.succeed('backup')
       }
     }
 
