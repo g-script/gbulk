@@ -73,7 +73,18 @@ Git LFS objects will be backup if {bold git-lfs} is available in path.`
       char: 'i',
       description: 'interactive mode',
       default: false,
-      exclusive: ['public', 'private', 'owner', 'collaborator', 'member', 'exclude', 'match', 'clean-refs', 'lfs']
+      exclusive: [
+        'public',
+        'private',
+        'owner',
+        'collaborator',
+        'member',
+        'exclude',
+        'match',
+        'clean-refs',
+        'lfs',
+        'quiet'
+      ]
     }),
     parallel: flags.string({
       char: 'p',
