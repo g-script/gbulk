@@ -25,8 +25,8 @@ const Git = {
    * @returns {void}
    * @throws {Error} `execa` error
    */
-  clone: async function cloneRepository({ path, url }, quiet = false) {
-    await execa('git', ['clone', '--mirror', url, path], !quiet && { stdio: 'inherit' })
+  clone: async function cloneRepository({ path, url }, pipe = false) {
+    await execa('git', ['clone', '--mirror', url, path], pipe && { stdio: 'inherit' })
   },
   /**
    * Delete /pull references from a local repository
@@ -77,8 +77,8 @@ const Git = {
      * @returns {void}
      * @throws {Error} `execa` error
      */
-    fetch: async function fetchLFS({ path }, quiet = false) {
-      await execa('git', ['lfs', 'fetch', '--all'], { cwd: path, stdio: quiet ? 'pipe' : 'inherit' })
+    fetch: async function fetchLFS({ path }, pipe = false) {
+      await execa('git', ['lfs', 'fetch', '--all'], { cwd: path, stdio: pipe ? 'inherit' : 'pipe' })
     }
   }
 }
