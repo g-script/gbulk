@@ -20,8 +20,8 @@ Each command needs access to different scopes, see individual command help secti
     })
   }
 
-  async run() {
-    const { args, flags } = this.parse(LoginCommand)
+  async run () {
+    const { flags } = this.parse(LoginCommand)
 
     const auth = config.get('auth')
 
@@ -45,7 +45,7 @@ Each command needs access to different scopes, see individual command help secti
         type: 'password',
         name: 'token',
         message: 'Enter your personnal access token',
-        validate: (token) => {
+        validate: token => {
           if (!token) {
             return 'Token is required'
           }

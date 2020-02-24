@@ -1,5 +1,4 @@
 const { Command, flags } = require('@oclif/command')
-const chalk = require('chalk')
 
 const config = require('../config')
 
@@ -12,9 +11,7 @@ Erase authentication details from configuration file`
     help: flags.help({ char: 'h' })
   }
 
-  async run() {
-    const { args, flags } = this.parse(LogoutCommand)
-
+  async run () {
     config.set('auth', {})
   }
 }
