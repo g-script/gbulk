@@ -36,8 +36,19 @@ const Git = {
    * @throws {Error} `execa` error
    */
   cleanRefs: async function cleanGithubRefs({ path }) {
-    // Search for pull requests
-    const { stdout: refs } = await execa('git', ['show-ref'], { cwd: path })
+    let refs = ''
+
+    try {
+      // Search for pull requests
+      const { stdout } = await execa('git', ['show-ref'], { cwd: path })
+
+      refs = stdout
+    } catch (err) {
+      if (err.exitCode === 1) {
+        return false
+      }
+    }
+
     const refsToDel = refs.split(os.EOL).reduce((acc, ref) => {
       const [, _ref] = ref.split(' ')
 
@@ -54,6 +65,8 @@ const Git = {
         await execa('git', ['update-ref', '-d', ref], { cwd: path })
       }
     }
+
+    return true
   },
   LFS: {
     /**
