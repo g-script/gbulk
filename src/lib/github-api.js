@@ -34,7 +34,7 @@ const GithubAPI = {
       }
 
       try {
-        const user = await axios({
+        const resultUser = await axios({
           method: 'get',
           url,
           headers: {
@@ -42,7 +42,7 @@ const GithubAPI = {
           }
         })
 
-        return user.data
+        return resultUser.data
       } catch (err) {
         if (err.response.status >= 400) {
           throw err.response.data.message
