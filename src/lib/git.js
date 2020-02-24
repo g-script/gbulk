@@ -1,4 +1,3 @@
-const { CLIError } = require('@oclif/errors')
 const execa = require('execa')
 const os = require('os')
 
@@ -7,13 +6,13 @@ const Git = {
    * Try to run `git --version`,
    * if it fails it means git is not available
    * @returns {void}
-   * @throws {CLIError}
+   * @throws {Error}
    */
   check: async function checkGit() {
     try {
       await execa('git', ['--version'])
     } catch (err) {
-      throw new CLIError('git not found. Make sure git is installed and run gbulk again')
+      throw new Error('git not found. Make sure git is installed and run gbulk again')
     }
   },
   /**
