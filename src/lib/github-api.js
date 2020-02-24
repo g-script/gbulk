@@ -70,28 +70,12 @@ const GithubAPI = {
 
       const debug = createDebugger('get-repositories')
 
+      debug({ token, from, options })
+
       if (!from) {
         debug('fetch authenticated user repositories')
 
-        const params = Object.keys(options).reduce((acc, key) => {
-          if (key === 'affiliation') {
-            acc[key] = options[key]
-              .map((val) => {
-                if (val === 'member') return 'organization_member'
-
-                return val
-              })
-              .join(',')
-          }
-
-          if (key === 'type') {
-            acc.visibility = options[key]
-          }
-
-          return acc
-        }, {})
-
-        return recurseRepositories({ token, url: base + '/user/repos', params, debug })
+        return recurseRepositories({ token, url: base + '/user/repos', params: options, debug })
       }
 
       return []
