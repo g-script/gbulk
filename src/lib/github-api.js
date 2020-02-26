@@ -57,26 +57,36 @@ const GithubAPI = {
      * @param {Object} data
      * @param {String} data.token Authentication token
      * @param {String} data.from Account to get list of repositories from
-     * @param {Object<affiliation: Array[String]?, type: String?>?} data.options API options
+     * @param {Object} data.options
+     * @param {Object<affiliation: Array[String]?, type: String?>?} data.options.params API call parameters
+     * @param {String} data.options.type Account type
      * @throws {Error} Missing token
      * @returns {Array} List of repositories
      * @see https://developer.github.com/v3/repos/#list-your-repositories
      * @see https://developer.github.com/v3/repos/#list-user-repositories
      * @see https://developer.github.com/v3/repos/#list-organization-repositories
      */
-    repositories: async function getRepositories({ token, from, options }) {
+    repositories: async function getRepositories ({ token, from, options: { params, type: accountType } }) {
       if (!token) {
         throw new Error('No token provided @getAuthenticatedUserRepositories')
       }
 
       const debug = createDebugger('get-repositories')
 
-      debug({ token, from, options })
+      debug({ token, from, accountType, params })
 
-      if (!from) {
+      if (accountType === 'Authenticated') {
         debug('fetch authenticated user repositories')
 
-        return recurseRepositories({ token, url: base + '/user/repos', params: options, debug })
+        return recurseRepositories({ token, url: base + '/user/repos', params, debug })
+      } else if (accountType === 'User') {
+        debug(`fetch ${from} repositories`)
+
+        return recurseRepositories({ token, url: `${base}/users/${from}/repos`, params, debug })
+      } else if (accountType === 'Organization') {
+        debug(`fetch ${from} organization repositories`)
+
+        return recurseRepositories({ token, url: `${base}/orgs/${from}/repos`, params, debug })
       }
 
       return []
