@@ -495,84 +495,80 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @returns {Object} Builded options
    * @throws {CLIError} if account type is unknown
    */
-  buildFetchOptions(type) {
+  buildFetchOptions (type) {
+    const { public: isPublic, private: isPrivate, member, owner } = this.flags
+    const options = {
+      type,
+      params: {}
+    }
+
     if (type === 'User') {
-      return this.buildUserFetchOptions()
-    }
+      const typeParam = member && !owner ? 'member' : owner && !member ? 'owner' : 'all'
 
-    if (type === 'Organization') {
-      return this.buildOrganizationFetchOptions()
-    }
+      this.debug('backup another user repositories where user is', typeParam === 'all' ? 'owner or member' : typeParam)
 
-    if (type === 'Authenticated') {
-      return this.buildAuthUserFetchOptions()
-    }
+      options.params = {
+        type: typeParam
+      }
+    } else if (type === 'Organization') {
+      // This could (should) be enhanced
+      const typeParam =
+        isPublic && !isPrivate && !member
+          ? 'public'
+          : isPrivate && !isPublic && !member
+            ? 'private'
+            : member && !isPublic && !isPrivate
+              ? 'member'
+              : 'all'
 
-    this.error(`User type ${type} is not handled.`)
-  }
+      this.debug(
+        'backup',
+        typeParam !== 'all' && isPublic && !isPrivate
+          ? 'public'
+          : typeParam !== 'all' && isPrivate && !isPublic
+            ? 'private'
+            : 'all',
+        'organization repositories',
+        typeParam === 'member' ? 'where user is member' : ''
+      )
 
-  /**
-   * Builds fetch options for authenticated user.
-   * @returns {Object} Builded options
-   */
-  buildAuthUserFetchOptions() {
-    const { public: isPublic, private: isPrivate } = this.flags
+      options.params = {
+        type: typeParam
+      }
+    } else if (type === 'Authenticated') {
+      const visibility = isPublic && !isPrivate ? 'public' : isPrivate && !isPublic ? 'private' : 'all'
+      const affiliationFlags = ['owner', 'collaborator', 'member']
+      const affiliation = []
 
-    const visibility = isPublic && !isPrivate ? 'public' : isPrivate && !isPublic ? 'private' : 'all'
-
-    const affiliationFlags = ['owner', 'collaborator', 'member']
-    const affiliation = []
-
-    // Handle affiliation flags enabling
-    affiliationFlags.forEach((flag) => {
-      if (this.flags[flag]) affiliation.push(flag)
-    })
-
-    // If no affiliation flag explicitly enabled
-    if (!affiliation.length) {
-      // Enable all affiliation flags not explicitly disabled
+      // Handle affiliation flags enabling
       affiliationFlags.forEach((flag) => {
-        if (this.flags[flag] !== false) affiliation.push(flag)
+        if (this.flags[flag]) affiliation.push(flag)
       })
+
+      // If no affiliation flag explicitly enabled
+      if (!affiliation.length) {
+        // Enable all affiliation flags not explicitly disabled
+        affiliationFlags.forEach((flag) => {
+          if (this.flags[flag] !== false) affiliation.push(flag)
+        })
+      }
+
+      this.debug(
+        'backup authenticated user',
+        visibility === 'all' ? 'public and private' : visibility,
+        'repositories where user is',
+        affiliation.join(',')
+      )
+
+      options.params = {
+        affiliation: affiliation.map((aff) => (aff === 'member' ? 'organization_member' : aff)).join(','),
+        visibility
+      }
+    } else {
+      this.error(`User type ${type} is not handled.`)
     }
 
-    this.debug(
-      'backup authenticated user',
-      visibility === 'all' ? 'public and private' : visibility,
-      'repositories where user is',
-      affiliation.join(',')
-    )
-
-    return {
-      affiliation: affiliation.map((aff) => (aff === 'member' ? 'organization_member' : aff)).join(','),
-      visibility
-    }
-  }
-
-  /**
-   * Builds fetch options for another user.
-   * @returns {Object} Builded options
-   */
-  buildUserFetchOptions() {
-    const { member, owner } = this.flags
-
-    const type = member && !owner ? 'member' : owner && !member ? 'owner' : 'all'
-
-    this.debug('backup another user repositories where user is', type === 'all' ? 'owner or member' : type)
-
-    return {
-      type
-    }
-  }
-
-  /**
-   * @todo Make options
-   *
-   * Builds fetch options for another user.
-   * @returns {Object} Builded options
-   */
-  buildOrganizationFetchOptions() {
-    return {}
+    return options
   }
 
   /**
