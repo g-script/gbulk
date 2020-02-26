@@ -8,7 +8,7 @@ const Git = {
    * @returns {void}
    * @throws {Error}
    */
-  check: async function checkGit() {
+  check: async function checkGit () {
     try {
       await execa('git', ['--version'])
     } catch (err) {
@@ -24,7 +24,7 @@ const Git = {
    * @returns {void}
    * @throws {Error} `execa` error
    */
-  clone: async function cloneRepository({ path, url }, pipe = false) {
+  clone: async function cloneRepository ({ path, url }, pipe = false) {
     await execa('git', ['clone', '--mirror', url, path], pipe && { stdio: 'inherit' })
   },
   /**
@@ -34,7 +34,7 @@ const Git = {
    * @returns {void}
    * @throws {Error} `execa` error
    */
-  cleanRefs: async function cleanGithubRefs({ path }) {
+  cleanRefs: async function cleanGithubRefs ({ path }) {
     let refs = ''
 
     try {
@@ -72,7 +72,7 @@ const Git = {
      * Try to run `git lfs version`
      * if it fails it means git lfs is not available
      */
-    check: async function checkGitLFS() {
+    check: async function checkGitLFS () {
       try {
         await execa('git', ['lfs', 'version'])
 
@@ -89,7 +89,7 @@ const Git = {
      * @returns {void}
      * @throws {Error} `execa` error
      */
-    fetch: async function fetchLFS({ path }, pipe = false) {
+    fetch: async function fetchLFS ({ path }, pipe = false) {
       await execa('git', ['lfs', 'fetch', '--all'], { cwd: path, stdio: pipe ? 'inherit' : 'pipe' })
     }
   }

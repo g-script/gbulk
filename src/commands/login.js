@@ -45,7 +45,7 @@ Each command needs access to different scopes, see individual command help secti
         type: 'password',
         name: 'token',
         message: 'Enter your personnal access token',
-        validate: token => {
+        validate: (token) => {
           if (!token) {
             return 'Token is required'
           }

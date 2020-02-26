@@ -174,7 +174,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Initialize runtime data that will be used by our functions.
    * @param  {...any} args Original arguments passed to super()
    */
-  constructor(...args) {
+  constructor (...args) {
     super(...args)
 
     this.args = {}
@@ -186,7 +186,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
   /**
    * Runs initialization of args and flags with parsed command values.
    */
-  _init() {
+  _init () {
     const { args, flags } = this.parse(BackupCommand)
 
     this.debug('arguments', args)
@@ -201,7 +201,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @param {Object} args Original arguments parsed from command
    * @see BackupCommand.argsSchema
    */
-  initArgs(args) {
+  initArgs (args) {
     // Joi.attempt() returns validated args (with default values generated on runtime)
     this.args = Joi.attempt(args, BackupCommand.argsSchema, new CLIError('Failed to validate args'))
   }
@@ -210,7 +210,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Initialize `this.flags`.
    * @param {Object} flags Original flags parsed from command
    */
-  initFlags(flags) {
+  initFlags (flags) {
     this.flags = flags
   }
 
@@ -218,7 +218,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Checks authentication from config and save it to `this.auth`.
    * @throws {CLIError} if authentication is invalid
    */
-  checkAuth() {
+  checkAuth () {
     this.debug('checking authentication')
 
     const auth = config.get('auth')
@@ -239,7 +239,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Checks git command availability.
    * @throws {CLIError} if git command is not available
    */
-  async checkGit() {
+  async checkGit () {
     this.debug('checking git command availability')
 
     try {
@@ -256,7 +256,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Checks destination path exists and we have write acces on it.
    * If it doesn’t exists, we try to create it.
    */
-  async checkDestination() {
+  async checkDestination () {
     const { destination } = this.args
 
     this.debug('checking destination path', destination)
@@ -293,7 +293,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * without any search filter flags defined, all options are pre-checked.
    * Selection is appended to `this.flags`.
    */
-  async promptSearchFilters() {
+  async promptSearchFilters () {
     const { public: isPublic, private: isPrivate, owner, member, collaborator } = this.flags
     const hasFlagsDefined =
       isPublic !== undefined ||
@@ -347,7 +347,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @param {Array} repositories Repositories to backup
    * @returns {Array} Selected repositories
    */
-  async selectRepositories(repositories) {
+  async selectRepositories (repositories) {
     const { repos: selectedRepos } = await inquirer.prompt([
       {
         type: 'checkbox',
@@ -393,7 +393,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
                 return acc
               }, [])
           ),
-        validate: function(selectedRepos) {
+        validate: function (selectedRepos) {
           if (selectedRepos.length === 0) {
             return 'You must choose at least one repository.'
           }
@@ -414,7 +414,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * - if in interactive mode and flag is not defined, prompt user
    * - if flag is defined, use it as is (even in interactive mode)
    */
-  async handleCleanRefOption() {
+  async handleCleanRefOption () {
     const { interactive, 'clean-refs': cleanRefs } = this.flags
 
     if (interactive && cleanRefs !== undefined) {
@@ -445,7 +445,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * - if in interactive mode and flag is not defined, prompt user
    * - if flag is defined, use it as is (even in interactive mode)
    */
-  async handleLFSOption() {
+  async handleLFSOption () {
     const { interactive, lfs } = this.flags
 
     this.debug('checking git lfs availability')
@@ -580,7 +580,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @param {Array} repositories Repositories to backup
    * @returns {Array} Filtered repositories
    */
-  handleExclusions(repositories) {
+  handleExclusions (repositories) {
     const { exclude } = this.flags
 
     if (exclude && exclude.length) {
@@ -617,7 +617,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @param {Array} repositories Repositories to backup
    * @returns {Array} Filtered repositories
    */
-  handleInclusions(repositories) {
+  handleInclusions (repositories) {
     const { match } = this.flags
 
     if (match && match.length) {
@@ -653,7 +653,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Clone repository.
    * @param {Object} repository Repository data
    */
-  async clone(repository) {
+  async clone (repository) {
     const { quiet } = this.flags
 
     this.debug(repository.fullName, 'clone repository')
@@ -696,9 +696,9 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @param {Object} repository Repository data
    * @returns {Boolean} true if a warning was raised, false if not
    */
-  async fetchLFS(repository) {
+  async fetchLFS (repository) {
     const { quiet } = this.flags
-    let curSpinnerText = !quiet && spinnies.pick(repository.fullName).text
+    const curSpinnerText = !quiet && spinnies.pick(repository.fullName).text
 
     this.debug(repository.fullName, 'fetch lfs objects')
 
@@ -738,9 +738,9 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * @param {Object} repository Repository data
    * @returns {Boolean} true if a warning was raised, false if not
    */
-  async cleanRefs(repository) {
+  async cleanRefs (repository) {
     const { quiet } = this.flags
-    let curSpinnerText = !quiet && spinnies.pick(repository.fullName).text
+    const curSpinnerText = !quiet && spinnies.pick(repository.fullName).text
 
     this.debug(repository.fullName, 'clean pull refs')
 
@@ -790,7 +790,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Run repositories backup process.
    * @param {Array} repositories Repositories to backup
    */
-  async backup(repositories) {
+  async backup (repositories) {
     const { 'clean-refs': cleanRefs, lfs, parallel, quiet } = this.flags
     const globalBackupText = !quiet && spinnies.pick('backup').text
     let backupCount = 0
@@ -836,7 +836,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
   /**
    * Run command.
    */
-  async run() {
+  async run () {
     this.initGracefulShutdown()
 
     this._init()

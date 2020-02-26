@@ -93,7 +93,7 @@ const GithubAPI = {
  * @param {Number} data.page Page number
  * @param {Function} debug Debugging function
  */
-const recurseRepositories = async function({ token, url, params, repositories = [], page = 1, debug }) {
+const recurseRepositories = async function ({ token, url, params, repositories = [], page = 1, debug }) {
   debug('fetch', url)
 
   let repos = []
