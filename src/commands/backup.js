@@ -446,7 +446,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * - if flag is defined, use it as is (even in interactive mode)
    */
   async handleLFSOption () {
-    const { interactive, lfs } = this.flags
+    const { interactive, lfs, quiet } = this.flags
 
     this.debug('checking git lfs availability')
 
