@@ -869,6 +869,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
 
     let repositories = await GithubAPI.get.repositories({
       token: this.auth.token,
+      from,
       options
     })
 
