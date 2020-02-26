@@ -56,7 +56,7 @@ Each command needs access to different scopes, see individual command help secti
     ])
 
     try {
-      const user = await GithubAPI.get.user(token)
+      const user = await GithubAPI.get.user({ token })
 
       config.set('auth', {
         token,

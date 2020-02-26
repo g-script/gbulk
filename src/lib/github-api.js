@@ -8,14 +8,15 @@ const GithubAPI = {
   get: {
     /**
      * Get details about a user. Defaults to user represented by token
-     * @param {String} token Authentication token
-     * @param {String?} user User name to get details
+     * @param {Object} data
+     * @param {String} data.token Authentication token
+     * @param {String?} data.user User name to get details
      * @throws {Error|String} Github API error message or axios error
      * @returns {Object} User details
      * @see https://developer.github.com/v3/users/#get-a-single-user
      * @see https://developer.github.com/v3/users/#get-the-authenticated-user
      */
-    user: async function getUser(token, user) {
+    user: async function getUser ({ token, user }) {
       if (!token) {
         throw new Error('No token provided @getUser')
       }
