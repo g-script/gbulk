@@ -879,7 +879,7 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
     }
 
     if (!repositories.length) {
-      this.error('No repositories to backup.')
+      this.warn('No repositories to backup.')
     } else {
       repositories = this.handleInclusions(this.handleExclusions(repositories))
 
