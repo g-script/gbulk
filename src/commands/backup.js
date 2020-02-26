@@ -833,8 +833,6 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
    * Run command.
    */
   async run () {
-    this.initGracefulShutdown()
-
     this._init()
 
     const { from } = this.args
@@ -903,49 +901,6 @@ Bulk backups are very long, so it is not recommended to use quiet mode. Anyway: 
       if (!quiet) {
         spinnies.succeed('backup')
       }
-    }
-  }
-
-  /**
-   * Register event listener for graceful shutdown
-   */
-  initGracefulShutdown() {
-    process.stdin.resume()
-
-    process.on('exit', this.shutdown.bind(this)) // App closing
-    process.on('SIGINT', this.shutdown.bind(this)) // CTRL+C
-    process.on('SIGUSR1', this.shutdown.bind(this)) // Kill command
-    process.on('SIGUSR2', this.shutdown.bind(this)) // Kill command
-    process.on('uncaughtException', this.shutdown.bind(this)) // Uncaught exception
-  }
-
-  /**
-   * Handles graceful shutdown
-   * - destination path is deleted if it was created and is empty
-   * - destination path is keeped if it existed or was created and not empty
-   */
-  shutdown() {
-    const { destination } = this.args
-
-    if (this.destinationCreated) {
-      try {
-        fs.rmdirSync(destination)
-
-        this.log(`---
-Backup cancelled!`)
-      } catch (err) {
-        this.log(`---
-Backup cancelled!
-
-${destination} will not be removed as it is not empty`)
-
-        process.exit(130)
-      }
-    } else {
-      this.log(`---
-Backup cancelled!`)
-
-      process.exit(130)
     }
   }
 }
