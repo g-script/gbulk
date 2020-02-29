@@ -9,7 +9,7 @@
   "bugs": "https://github.com/g-script/gbulk/issues",
   "dependencies": {
     "@oclif/command": "1.5.19",
-    "@oclif/config": "1.13.3",
+    "@oclif/config": "1.14.0",
     "@oclif/plugin-help": "2.2.3",
     "@oclif/plugin-not-found": "1.2.3",
     "@oclif/plugin-warn-if-update-available": "1.7.0",
