@@ -18,7 +18,7 @@
     "conf": "6.2.0",
     "debug": "4.1.1",
     "execa": "4.0.0",
-    "inquirer": "7.0.4",
+    "inquirer": "7.0.5",
     "node": "12.14.1",
     "spinnies": "0.5.1"
   },
