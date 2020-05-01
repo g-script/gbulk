@@ -20,7 +20,8 @@
     "execa": "4.0.0",
     "inquirer": "7.0.4",
     "node": "12.14.1",
-    "spinnies": "0.5.1"
+    "spinnies": "0.5.1",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.22.2",
@@ -70,6 +71,9 @@
     "posttest": "eslint .",
     "prepack": "oclif-dev manifest && oclif-dev readme",
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
-  }
+    "version": "oclif-dev readme && git add README.md",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
